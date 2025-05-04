@@ -1,0 +1,33 @@
+const jwt = require("jsonwebtoken");
+// In your backend auth middleware
+// res.cookie('token', token, {
+//     httpOnly: true,
+//     secure: process.env.NODE_ENV === 'production',
+//     sameSite: 'None', // For cross-site cookies
+//     domain: '.yourdomain.com' // Set your main domain
+//   });
+
+// middleware/authMiddleware.js
+// backend/middleware/authMiddleware.js
+
+
+const authenticate = (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ message: "Authentication required" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (error) {
+    res.clearCookie('token');
+    return res.status(401).json({ message: "Invalid token" });
+  }
+};
+
+
+
+module.exports = authenticate;

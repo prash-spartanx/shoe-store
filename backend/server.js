@@ -1,52 +1,45 @@
+// backend/server.js
 const express = require("express");
-const app = express();
+const mongoose = require("mongoose");
 const cors = require("cors");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
+const app = express();
+
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
 app.use(express.json());
+app.use(cookieParser());
 
 // Database Connection
-const mongoose = require("mongoose");
-mongoose
-  .connect(process.env.MONGO_URI)
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
   .catch((err) => console.log(err));
 
-// ========== ROUTES ==========
-// Test Route
-app.get("/api/test", (req, res) => {
-  res.json({ message: "Server is working!" });
-});
+// Routes
+const productRoutes = require('./routes/products');
+const authRoutes = require('./routes/auth');
+ // Ensure correct file name
+// backend/server.js
+const cartRoutes = require("./routes/cart");
+app.use("/api/cart", cartRoutes);
+app.use('/api/products', productRoutes);
+app.use('/api/auth', authRoutes);
 
-// Products Route (Temporary)
-// Add this route before starting the server
-app.get("/api/test-products", (req, res) => {
-  const testProducts = [
-    {
-      _id: 1,
-      name: "Nike Air Max 270",
-      price: 150,
-      image:
-        "https://static.nike.com/a/images/t_PDP_1728_v1/f_auto,q_auto:eco/9acdbda3-6e4d-488b-8f0b-706505248c64/air-max-270-mens-shoes-KkLcGR.png",
-      description: "Iconic Air Max cushioning",
-    },
-    {
-      _id: 2,
-      name: "Adidas Ultraboost 22",
-      price: 180,
-      image:
-        "https://assets.adidas.com/images/h_840,f_auto,q_auto,fl_lossy,c_fill,g_auto/2cee9868d67f4d73a8dcae8c00fb220c_9366/Ultraboost_22_Shoes_Black_GZ0127_01_standard.jpg",
-      description: "Responsive cushioning shoes",
-    },
-  ];
-  res.json(testProducts);
-});
 
-// ========== START SERVER ==========
+// Start Server
 const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`Test endpoint: http://localhost:${PORT}/api/test`);
 });
+
+app.use(cors({
+  origin: 'http://localhost:3001', // Match your frontend port
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
