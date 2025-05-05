@@ -15,9 +15,9 @@ angular.module('loginApp', [])
                         sessionStorage.setItem('currentUser', JSON.stringify(user));
                     
                         if (user.role === 'admin') {
-                            $window.location.href = 'admin.html';
+                            $window.location.href = 'admin.html';  // Ensure you have an admin.html for rental
                         } else {
-                            $window.location.href = 'index.html';
+                            $window.location.href = 'index.html';  // Redirect to rental service home
                         }
                     } else {
                         $scope.error = "Invalid password";

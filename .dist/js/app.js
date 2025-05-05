@@ -1,71 +1,79 @@
-angular.module('petAdoptionApp', [])
-.controller('PetController', function($scope, $http, $window) {
+angular.module('furnitureRentalApp', [])
+.controller('FurnitureController', function($scope, $http, $window) {
 
     $scope.checkAuth = function() {
         $scope.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
         if (!$scope.currentUser) {
             $window.location.href = 'login.html';
         }
-        
-        $scope.selectedPet = null;
-        $scope.adoptionDetails = {};
-        
-        $http.get('http://localhost:3000/pets')
+
+        $scope.selectedItem = null;
+        $scope.rentalDetails = {};
+
+        $http.get('http://localhost:3000/furnitures')
             .then(function(response) {
-                $scope.pets = response.data;
+                $scope.furnitures = response.data;
             });
     };
-    
+
     $scope.logout = function() {
         sessionStorage.removeItem('currentUser');
         $window.location.href = 'login.html';
     };
-    
-    $scope.showAdoptionForm = function(petId) {
-        $scope.selectedPet = petId;
-        $scope.adoptionDetails = {}; // Clear previous form data
+
+    $scope.showRentalForm = function(itemId) {
+        $scope.selectedItem = itemId;
+        $scope.rentalDetails = {}; // Clear previous form data
     };
-    
-    $scope.cancelAdoptionForm = function() {
-        $scope.selectedPet = null;
+
+    $scope.cancelRentalForm = function() {
+        $scope.selectedItem = null;
     };
-    
-    $scope.submitAdoptionForm = function(petId) {
-        var adoptionData = {
-            adopted: true,
-            adoptedBy: {
-                userId: $scope.currentUser.id,
-                username: $scope.currentUser.username,
-                name: $scope.adoptionDetails.name,
-                email: $scope.adoptionDetails.email,
-                phone: $scope.adoptionDetails.phone,
-                address: $scope.adoptionDetails.address,
-                adoptionDate: new Date().toISOString()
-            }
-        };
-        
-        $http.patch('http://localhost:3000/pets/' + petId, adoptionData)
-            .then(function() {
-                var adoptionRecord = {
-                    petId: petId,
+
+    $scope.submitRentalForm = function(itemId) {
+        // Step 1: Get existing furniture
+        $http.get('http://localhost:3000/furnitures/' + itemId)
+            .then(function(response) {
+                var updatedFurniture = response.data;
+                updatedFurniture.rented = true;
+                updatedFurniture.rentedBy = {
                     userId: $scope.currentUser.id,
-                    adoptionDetails: $scope.adoptionDetails,
-                    adoptionDate: new Date().toISOString()
+                    username: $scope.currentUser.username,
+                    name: $scope.rentalDetails.name,
+                    email: $scope.rentalDetails.email,
+                    phone: $scope.rentalDetails.phone,
+                    address: $scope.rentalDetails.address,
+                    offerPrice: $scope.rentalDetails.offerPrice,
+                    rentalDate: new Date().toISOString()
                 };
-                
-                return $http.post('http://localhost:3000/adoptions', adoptionRecord);
+
+                // Step 2: Update the full object using PUT
+                return $http.put('http://localhost:3000/furnitures/' + itemId, updatedFurniture);
             })
             .then(function() {
-                alert('Adoption submitted successfully!');
-                $scope.selectedPet = null;
-                $http.get('http://localhost:3000/pets')
+                // Step 3: Log the rental
+                var rentalRecord = {
+                    itemId: itemId,
+                    userId: $scope.currentUser.id,
+                    rentalDetails: $scope.rentalDetails,
+                    rentalDate: new Date().toISOString()
+                };
+
+                return $http.post('http://localhost:3000/rentals', rentalRecord);
+            })
+            .then(function() {
+                alert('Rental submitted successfully!');
+                $scope.selectedItem = null;
+
+                // Refresh furniture list
+                $http.get('http://localhost:3000/furnitures')
                     .then(function(response) {
-                        $scope.pets = response.data;
+                        $scope.furnitures = response.data;
                     });
             })
             .catch(function(error) {
                 console.error('Error:', error);
-                alert('Error submitting adoption. Please try again.');
+                alert('Error submitting rental. Please try again.');
             });
     };
 });

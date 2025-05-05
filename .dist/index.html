@@ -1,60 +1,161 @@
 <!DOCTYPE html>
-<html ng-app="petAdoptionApp">
+<html ng-app="furnitureRentalApp">
 <head>
-    <title>Pet Adoption</title>
+    <title>Furniture Rental</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
     <script src="js/app.js"></script>
+    <style>
+        body {
+            background: #f5f5f5;
+        }
+
+        header {
+            background-color: #343a40;
+            color: #fff;
+            padding: 1.5rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        header .btn {
+            float: right;
+            margin-top: -45px;
+        }
+
+        .furniture-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .furniture-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 1rem;
+            width: 300px;
+            transition: transform 0.2s;
+        }
+
+        .furniture-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+        }
+
+        .furniture-card img {
+            width: 100%;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .furniture-card h3 {
+            margin: 1rem;
+        }
+
+        .furniture-card p {
+            margin: 0.5rem 1rem;
+        }
+
+        .rented-info {
+            background-color: #ffe6e6;
+            padding: 1rem;
+            margin: 1rem;
+            border-left: 5px solid #dc3545;
+            border-radius: 5px;
+        }
+
+        .rented-label {
+            font-weight: bold;
+            color: #dc3545;
+        }
+
+        .rental-form {
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-top: 1px solid #dee2e6;
+        }
+
+        .rental-form .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .btn {
+            margin: 0.5rem;
+        }
+
+        .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+            border: none;
+        }
+
+        .btn-cancel:hover {
+            background-color: #5a6268;
+        }
+    </style>
 </head>
-<body ng-controller="PetController" ng-init="checkAuth()">
+<body ng-controller="FurnitureController" ng-init="checkAuth()">
     <header>
-        <h1>Pet Adoption Center</h1>
-        <button ng-click="logout()" class="btn">Logout</button>
+        <h1>Furniture Rental Platform</h1>
+        <button ng-click="logout()" class="btn btn-danger">Logout</button>
     </header>
 
-    <div class="pet-list">
-        <div class="pet-card" ng-repeat="pet in pets">
-            <img ng-src="{{ pet.image }}" alt="{{ pet.name }}">
-            <h3>{{ pet.name }}</h3>
-            <p><strong>Type:</strong> {{ pet.type }}</p>
-            <p><strong>Breed:</strong> {{ pet.breed }}</p>
+    <div class="furniture-list">
+        <div class="furniture-card" ng-repeat="item in furnitures">
+            <img ng-src="{{ item.image }}" alt="{{ item.name }}">
+            <h3>{{ item.name }}</h3>
+            <p><strong>Category:</strong> {{ item.category || 'N/A' }}</p>
+            <p><strong>Brand:</strong> {{ item.brand || 'N/A' }}</p>
             
-            <div ng-if="pet.adopted" class="adopted-info">
-                <p class="adopted-label">ADOPTED</p>
-                <p><strong>By:</strong> {{ pet.adoptedBy.name }}</p>
-                <p><strong>Email:</strong> {{ pet.adoptedBy.email }}</p>
+            <div ng-if="item.rented" class="rented-info">
+                <p class="rented-label">RENTED</p>
+                <p><strong>By:</strong> {{ item.rentedBy.name }}</p>
+                <p><strong>Email:</strong> {{ item.rentedBy.email }}</p>
             </div>
             
-            <div ng-if="!pet.adopted && selectedPet === pet.id" class="adoption-form">
-                <h4>Adoption Form</h4>
-                <form ng-submit="submitAdoptionForm(pet.id)">
+            <div ng-if="!item.rented && selectedItem === item.id" class="rental-form">
+                <h5>Rental Form</h5>
+                <form ng-submit="submitRentalForm(item.id)">
                     <div class="form-group">
                         <label>Full Name</label>
-                        <input type="text" ng-model="adoptionDetails.name" required>
+                        <input type="text" class="form-control" ng-model="rentalDetails.name" required>
                     </div>
                     <div class="form-group">
                         <label>Email</label>
-                        <input type="email" ng-model="adoptionDetails.email" required>
+                        <input type="email" class="form-control" ng-model="rentalDetails.email" required>
                     </div>
                     <div class="form-group">
                         <label>Phone</label>
-                        <input type="tel" ng-model="adoptionDetails.phone" required>
+                        <input type="tel" class="form-control" ng-model="rentalDetails.phone" required>
                     </div>
                     <div class="form-group">
                         <label>Address</label>
-                        <textarea ng-model="adoptionDetails.address" required></textarea>
+                        <textarea class="form-control" ng-model="rentalDetails.address" required></textarea>
                     </div>
-                    <button type="submit" class="btn">Submit Adoption</button>
-                    <button type="button" class="btn-cancel" ng-click="cancelAdoptionForm()">Cancel</button>
+                    <div class="form-group">
+                        <label>Offer Price (per month)</label>
+                        <input type="number" class="form-control" ng-model="rentalDetails.offerPrice" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Rental</button>
+                    <button type="button" class="btn btn-cancel" ng-click="cancelRentalForm()">Cancel</button>
                 </form>
             </div>
             
-            <button ng-if="!pet.adopted && selectedPet !== pet.id" 
-                    ng-click="showAdoptionForm(pet.id)" 
-                    class="btn">
-                Adopt Me
+            <button ng-if="!item.rented && selectedItem !== item.id" 
+                    ng-click="showRentalForm(item.id)" 
+                    class="btn btn-success btn-block">
+                Rent?
             </button>
         </div>
     </div>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
