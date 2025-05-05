@@ -1,16 +1,26 @@
 {
   "furnitures": [
     {
-      "id": 1,
+      "id": "1",
       "name": "Modern Sofa",
       "description": "A comfortable 3-seater modern sofa in grey fabric.",
       "image": "sofa.avif",
       "category": "Living Room",
       "brand": "sofa.avif",
-      "rented": false
+      "rented": true,
+      "rentedBy": {
+        "userId": 2,
+        "username": "user1",
+        "name": "prash",
+        "email": "dbhhdbgd@gmail.com",
+        "phone": "7888865444",
+        "address": "uhdeughduh",
+        "offerPrice": 100,
+        "rentalDate": "2025-05-05T17:38:59.991Z"
+      }
     },
     {
-      "id": 2,
+      "id": "2",
       "name": "Wooden Dining Table",
       "description": "A 6-seater hardwood dining table with elegant design.",
       "image": "dining.jpeg",
@@ -19,7 +29,7 @@
       "rented": false
     },
     {
-      "id": 3,
+      "id": "3",
       "name": "Office Chair",
       "description": "Ergonomic chair with lumbar support and adjustable height.",
       "image": "officechair.jpeg",
@@ -28,7 +38,7 @@
       "rented": false
     },
     {
-      "id": 4,
+      "id": "4",
       "name": "Queen Bed Frame",
       "description": "Solid wooden queen-sized bed with storage drawers.",
       "image": "download.jpeg",
@@ -37,7 +47,7 @@
       "rented": false
     },
     {
-      "id": 5,
+      "id": "5",
       "name": "Bookshelf",
       "description": "5-tier open bookshelf for living or office space.",
       "image": "bookshelf.avif",
@@ -46,7 +56,7 @@
       "rented": false
     },
     {
-      "id": 6,
+      "id": "6",
       "name": "Recliner Chair",
       "description": "Leather recliner with adjustable backrest and footrest.",
       "image": "recliner.jpeg",
@@ -55,7 +65,7 @@
       "rented": false
     },
     {
-      "id": 7,
+      "id": "7",
       "name": "Coffee Table",
       "description": "Glass-top coffee table with steel legs.",
       "image": "coffee.jpeg",
@@ -64,7 +74,7 @@
       "rented": false
     },
     {
-      "id": 8,
+      "id": "8",
       "name": "Double Wardrobe",
       "description": "Spacious double-door wardrobe with mirror.",
       "image": "wardrobe.jpeg",
@@ -73,7 +83,7 @@
       "rented": false
     },
     {
-      "id": 9,
+      "id": "9",
       "name": "TV Unit",
       "description": "Modern TV unit with drawers and cable management.",
       "image": "images/tv_unit.jpg",
@@ -82,7 +92,7 @@
       "rented": false
     },
     {
-      "id": 10,
+      "id": "10",
       "name": "Study Desk",
       "description": "Compact study desk with shelves and cable holes.",
       "image": "images/study_desk.jpg",
@@ -93,17 +103,31 @@
   ],
   "users": [
     {
-      "id": 1,
+      "id": "1",
       "username": "admin",
       "password": "admin123",
       "role": "admin"
     },
     {
-      "id": 2,
+      "id": "2",
       "username": "user1",
       "password": "user123",
       "role": "user"
     }
   ],
-  "rentals": []
+  "rentals": [
+    {
+      "id": "581c",
+      "itemId": "1",
+      "userId": 2,
+      "rentalDetails": {
+        "name": "prash",
+        "address": "uhdeughduh",
+        "phone": "7888865444",
+        "offerPrice": 100,
+        "email": "dbhhdbgd@gmail.com"
+      },
+      "rentalDate": "2025-05-05T17:39:00.023Z"
+    }
+  ]
 }

@@ -10,7 +10,7 @@ angular.module('furnitureRentalApp', [])
         $scope.selectedItem = null;
         $scope.rentalDetails = {};
 
-        $http.get('http://localhost:3000/furnitures')
+        $http.get('http://localhost:3001/furnitures')
             .then(function(response) {
                 $scope.furnitures = response.data;
             });
@@ -32,7 +32,7 @@ angular.module('furnitureRentalApp', [])
 
     $scope.submitRentalForm = function(itemId) {
         // Step 1: Get existing furniture
-        $http.get('http://localhost:3000/furnitures/' + itemId)
+        $http.get('http://localhost:3001/furnitures/' + itemId)
             .then(function(response) {
                 var updatedFurniture = response.data;
                 updatedFurniture.rented = true;
@@ -48,7 +48,7 @@ angular.module('furnitureRentalApp', [])
                 };
 
                 // Step 2: Update the full object using PUT
-                return $http.put('http://localhost:3000/furnitures/' + itemId, updatedFurniture);
+                return $http.put('http://localhost:3001/furnitures/' + itemId, updatedFurniture);
             })
             .then(function() {
                 // Step 3: Log the rental
@@ -59,14 +59,14 @@ angular.module('furnitureRentalApp', [])
                     rentalDate: new Date().toISOString()
                 };
 
-                return $http.post('http://localhost:3000/rentals', rentalRecord);
+                return $http.post('http://localhost:3001/rentals', rentalRecord);
             })
             .then(function() {
                 alert('Rental submitted successfully!');
                 $scope.selectedItem = null;
 
                 // Refresh furniture list
-                $http.get('http://localhost:3000/furnitures')
+                $http.get('http://localhost:3001/furnitures')
                     .then(function(response) {
                         $scope.furnitures = response.data;
                     });
